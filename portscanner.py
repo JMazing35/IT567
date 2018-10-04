@@ -5,7 +5,7 @@ conf.verb = 0
 
 
 
-def do_TCP(ip_address, destination_port, source_port):
+def do_TCP(ip_address, destination_port, source_port): #TCP Port Scanning on IP Address and Port
 	print "Running TCP Scan on IP Address: ", ip_address, " on Port: ", destination_port
 	answered, unanswered = sr(IP(dst = ip_address)/TCP(dport = destination_port, flags ="S"), timeout = 1)
 	answered.summary()
@@ -13,7 +13,7 @@ def do_TCP(ip_address, destination_port, source_port):
 	print "Unanswered Ports: ", unanswered
 
 
-def do_UDP(ip_address, destination_port, source_port):
+def do_UDP(ip_address, destination_port, source_port): #UDP Port Scanning on IP Address and Port
 	print "Running UDP scan on IP Address: ", ip_address, " on Port: ", destination_port
 	answered, unanswered = sr(IP(dst = ip_address)/UDP(dport = destination_port, sport = source_port), timeout = 2, verbose = 0)
 	answered.summary()
@@ -21,14 +21,14 @@ def do_UDP(ip_address, destination_port, source_port):
 	print "Unanswered Ports: ", unanswered
 
 
-def do_ICMP(ip_address):
+def do_ICMP(ip_address): #ICMP Scan on IP Address
 	print"Running ICMP on IP Address: ", ip_address
 	answered, unanswered = sr(IP(dst = ip_address)/ICMP(), timeout = 10)
 	answered.summary() 
 	answered.summary(lambda (s,r): r.sprintf("%IP.src% is alive")) #ICMP Ping - scapy.readthedocs.io
 	unanswered.summary()
 
-def do_TRACEROUTE(hostname): #https://jvns.ca/blog/2013/10/31/day-20-scapy-and-traceroute/
+def do_TRACEROUTE(hostname): #https://jvns.ca/blog/2013/10/31/day-20-scapy-and-traceroute/ - Traceroute on Host
 	print "Running Traceroute to Host: ", hostname
 	for i in range(1, 28): #Allow up to 28 hops to reach destination
 		packet = IP(dst = hostname, ttl = i) / UDP(dport = 33434)
@@ -47,6 +47,7 @@ def do_TRACEROUTE(hostname): #https://jvns.ca/blog/2013/10/31/day-20-scapy-and-t
 			print "%d. hop(s) away from source: " % i, reply.src
 
 
+#Terminal Menu
 print("Welcome to Justin's Port Scanner\n")
 
 #Allow user to seelct type of Scanning to do
@@ -64,8 +65,7 @@ print("8. Traceroute\n")
 user_selection = input("What option do you want to run? (Enter 1, 2, 3, 4, 5, 6, 7, or 8) ")
 
 
-
-
+#Switches based on User Selection
 if user_selection == 1: #TCP - Single IP Address - Single Port
 	ip_address = raw_input("Enter IP Address: ")
 	destination_port = input("Enter Destination Port: ")
@@ -78,7 +78,7 @@ elif user_selection == 2: #TCP - Single IP Address - Multiple Ports (up to 10)
 	ports = []
 	numPorts = 0
 	maxPorts = 10
-	while len(ports) < maxPorts:
+	while len(ports) < maxPorts: #Allow user to enter multiple Ports
 		port = input("Enter Destination Port: (One at a time, up to 10. when finished enter 0) ")
 		if port == 0:
 			if numPorts == 0:
@@ -102,7 +102,7 @@ elif user_selection == 3: #TCP - Multiple IP Addresses (up to 10) - Single Port
 	numIP = 0
 	maxIP = 10
 
-	while len(ip_addresses) < maxIP:
+	while len(ip_addresses) < maxIP: #Allow user to enter multiple IP Addresses
 		ip_address = raw_input("Enter IP Addresses: (One at a time, up to 10. when finished enter 'done') ")
 		if ip_address == 'done':
 			if numIP == 0:
@@ -134,7 +134,7 @@ elif user_selection == 5: #UDP - Single IP Address - Multiple Port (up to 10)
 	ports = []
 	numPorts = 0
 	maxPorts = 10
-	while len(ports) < maxPorts:
+	while len(ports) < maxPorts: #Allow user to enter multiple Ports
 		port = input("Enter Destination Port: (One at a time, up to 10. when finished enter 0) ")
 		if port == 0:
 			if numPorts == 0:
@@ -157,7 +157,7 @@ elif user_selection == 6: #UDP - Multiple IP Addresses (up to 10) - Single Port
 	numIP = 0
 	maxIP = 10
 
-	while len(ip_addresses) < maxIP:
+	while len(ip_addresses) < maxIP: #Allow users to enter multiple IP Addresses
 		ip_address = raw_input("Enter IP Addresses: (One at a time, up to 10. when finished enter 'done') ")
 		if ip_address == 'done':
 			if numIP == 0:
@@ -183,8 +183,7 @@ elif user_selection == 7: #ICMP
 elif user_selection == 8: #Traceroute
     hostname = raw_input("Enter hostname: (Such as google.com) ")
     do_TRACEROUTE(hostname)
-else:
-    #Invalid Entry
+else: #Invalid Entry
     print("Invalid selection! Exiting...")
     exit()
 
